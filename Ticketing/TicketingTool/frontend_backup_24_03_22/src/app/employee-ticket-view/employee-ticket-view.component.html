@@ -1,0 +1,148 @@
+<div class="pd-10-force">
+  <div class="form-layout form-layout-2">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label tx-bold">Ticket ID:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.ticket_code}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+
+      <div class="col-md-4 mg-t--1 mg-md-t-0">
+        <div class="form-group mg-md-l--1">
+          <label class="form-control-label tx-bold">Raised On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.created_on | date: 'dd/MM/yyyy'}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-4 mg-t--1 mg-md-t-0">
+        <div class="form-group mg-md-l--1">
+          <label class="form-control-label tx-bold">Status</label>
+          <span class="text-secondary">
+            {{ticket_detail?.status}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+
+    </div><!-- row -->
+  </div><!-- form-layout -->
+  <div class="form-layout form-layout-2 mg-t-10 border">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Subject:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.subject}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Department:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.department}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Attachments:</label>
+          <a *ngIf="attachment" [href]="attachment" download>
+            <span class="">
+              {{ticket_detail?.attachment}}
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="ticket_detail?.status!='Open'">
+        <div class="form-group mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Description:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.description}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-12" *ngIf="ticket_detail?.status=='Open'">
+        <div class="form-group mg-md-l--1 bd-t-0-force border-0">
+          <div class="col-md-6">
+            <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+              <label class="form-control-label tx-bold">Description:<span class="tx-danger">*</span></label>
+              <mat-form-field class="col-12 pd-0" appearance="outline" class="col-12 pd-0-force">
+                <textarea  [(ngModel)]="user_description"  rows="4" matInput placeholder="Feedback"> {{ticket_detail?.description}}</textarea>
+               
+              </mat-form-field>
+            </div>
+          </div><!-- col-4 -->
+          <button (click)="update_description(user_description)" mat-raised-button color="primary">Submit</button>
+         
+        </div>
+      </div><!-- col-4 -->
+    </div>
+  </div>
+
+  <div class="form-layout form-layout-2 mg-t-10 pd-b-10 border" *ngIf="ticket_detail?.status !='Open'">
+    <div class="row no-gutters">
+      <div class="col-md-3 mg-t--1 mg-md-t-0">
+        <div class="form-group filter_class mg-md-l--1 border-0">
+          <label class="form-control-label tx-bold">SLA/Priority:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.priority}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-3">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Assigned To:</label>
+          <span class="text-secondary">
+            {{employee_detail[ticket_detail?.assigned_to]?.employee_name}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+
+      <div class="col-md-3" *ngIf="ticket_detail?.status!='Open' && ticket_detail?.status!='Assigned'">
+        <div class="form-group filter_class test-class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Addressed On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.addressed_on  | date: 'dd/MM/yyyy HH:mm'}}
+          </span>
+        </div>
+      </div><!-- col-3 -->
+      <div class="col-md-3" *ngIf="ticket_detail?.status!='Open' && ticket_detail?.status!='Assigned'">
+        <div class="form-group filter_class test-class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Tentative Close On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.tentative_closed_on  | date: 'dd/MM/yyyy HH:mm'}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3" *ngIf="ticket_detail?.status=='Waiting'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Approve:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.approved_by}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-12" *ngIf="ticket_detail?.status=='Closed'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Reason:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.closed_reason}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-12" *ngIf="ticket_detail?.status=='Processing'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Description:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.admin_description}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+    </div><!-- row -->
+    
+  </div><!-- form-layout -->
+  

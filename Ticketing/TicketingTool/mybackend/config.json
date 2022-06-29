@@ -1,0 +1,5 @@
+﻿{
+    "secret": "HINDUJATECH_IDEAL_2.0_BY_GOWDHAM",
+    "token_life":86400,
+    "webservice_url":"https://helpdesk.hindujatech.com:3001/"
+}

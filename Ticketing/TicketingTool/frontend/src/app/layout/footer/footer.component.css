@@ -1,0 +1,4 @@
+.slim-footer .container{
+    height: 6vh !important;
+    min-height: 40px; 
+}

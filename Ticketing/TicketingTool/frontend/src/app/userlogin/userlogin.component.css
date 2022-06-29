@@ -1,0 +1,35 @@
+/* .shadow-left{
+    box-shadow: 5px 0px 60px -10px rgba(27,132,231,1)
+}
+.shadow-right{
+    box-shadow: -5px 0px 60px -10px rgba(27,132,231,1)
+} */
+.row{
+    justify-content: center;
+}
+.mat-form-field{
+    width: 100%;
+}
+.login_background{
+    background: url(../../assets/img/tech_support.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: auto;
+    height: 92vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding-bottom: 65px; */
+}
+.mat-card {
+    padding: 0px !important;
+}
+.mat-grid-list{
+    position: initial !important;
+}
+.mainpage{
+    margin-bottom: 0px !important;
+}
+
+
+

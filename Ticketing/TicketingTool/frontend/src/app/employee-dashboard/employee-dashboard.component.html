@@ -1,0 +1,263 @@
+<mat-sidenav-container class="sidenav-full">
+  <mat-sidenav class="child_nav" autoFocus="false" start="main_sidenav" #child_sidenav mode="side" disableClose="true"
+    position="end">
+    <div class="d-flex justify-content-between">
+      <label class="tx-14 text-center tx-primary tx-bold mg-t-10 mg-l-10" *ngIf="view_type=='edit'">Ticket Edit</label>
+      <label class="tx-14 text-center tx-primary tx-bold mg-t-10 mg-l-10" *ngIf="view_type=='view'">Ticket View</label>
+      <span class="close_nav mg-t-10">
+        <mat-icon class="cursor-pointer" (click)="child_sidenav.toggle()">close</mat-icon>
+      </span>
+    </div>
+    <app-employee-ticket-view [ticket_id]="selected_ticket_id" *ngIf="view_type=='view'"></app-employee-ticket-view>
+    <app-employee-ticket-edit [ticket_id]="selected_ticket_id" *ngIf="view_type=='edit'"></app-employee-ticket-edit>
+  </mat-sidenav>
+  <mat-sidenav class="profile_nav" autoFocus="false" #profile_sidenav mode="over" disableClose="true" position="start">
+    <span class="close_nav mg-t-5">
+      <mat-icon class="cursor-pointer" (click)="profile_sidenav.toggle()">close</mat-icon>
+    </span>
+    <app-my-profile></app-my-profile>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-sidenav-container class="sidenav-full">
+      <mat-sidenav class="main_nav sidenav-wv" autoFocus="false" #main_sidenav mode="over" disableClose="true"
+        position="end">
+        <div class="mg-b-10 back_button mg-10 mg-t-10">
+          <span [hidden]="view_nav" class="tx-14 text-center tx-primary tx-bold">
+            Ticket List
+          </span>
+          <span [hidden]="add_nav" class="tx-14 text-center tx-primary tx-bold">
+            Add Ticket
+          </span>
+          <span class="close_nav">
+            <mat-icon class="cursor-pointer" (click)="main_sidenav.toggle();child_sidenav.close()">close
+            </mat-icon>
+          </span>
+        </div>
+        <div class="pd-10" *ngIf="load_dashboard_table">
+          <app-add-ticket [hidden]="add_nav"></app-add-ticket>
+          <mat-accordion [hidden]="view_nav">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title> Overall </mat-panel-title>
+              </mat-expansion-panel-header>
+              <dashboard-table   (ticket_detail)="onChange($event)" [viewList]="true" type="overall"
+                [table_data]="over_all_department_data" [status_mapping]="status_mapping">
+              </dashboard-table>
+            </mat-expansion-panel>
+            <mat-expansion-panel *ngFor="let department of departments">
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{department}} </mat-panel-title>
+              </mat-expansion-panel-header>
+              <dashboard-table (ticket_detail)="onChange($event)" [status_mapping]="status_mapping" [viewList]="true"  
+              [table_data]="ticket_depatment_data[department]">
+              </dashboard-table>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content style="background-color: #00264d;">
+        <div class="slim-mainpanel" style="background-color: #00264d;">
+          <div class="container custom-dashboard">
+            <div class="slim-pageheader pd-t-15 pd-b-0">
+              <ol class="breadcrumb slim-breadcrumb tx-bold">
+                <span (click)="main_sidenav.toggle();add_nav=false;view_nav=true;"
+                  class="tx-white cursor-pointer d-flex mg-r-20">
+                  <i class="material-icons mg-r-2 tx-21">add_circle</i>
+                  <label class="cursor-pointer ">Add
+                    Ticket</label>
+                </span>
+                <span (click)="main_sidenav.toggle();add_nav=true;view_nav=false;"
+                  class="tx-white cursor-pointer d-flex">
+                  <i class="material-icons mg-r-2 tx-21">remove_red_eye</i>
+                  <label class="cursor-pointer ">View
+                    Tickets</label>
+                </span>
+              </ol>
+              <ol class="breadcrumb slim-breadcrumb tx-bold">
+                <span (click)="profile_sidenav.toggle()" class="tx-white cursor-pointer d-flex mg-r-20">
+                  <i class="material-icons mg-r-2 tx-21">person</i>
+                  <label class="cursor-pointer ">My Profile</label>
+                </span>
+              </ol>
+            </div><!-- slim-pageheader -->
+            <div class="row row-xs">
+              <div class="col-md-2">
+                <div class="card card-status pd-0-force">
+                  <div class="media">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>lock_open</mat-icon>
+                    </div> -->
+                    <div class=" media-body mg-0-force text-center col-8 pd-0-force">
+                      <button mat-raised-button color="primary" (click)="openDialog('Open')" class="dashboard_btn"  style="background:#1948f3">
+                        <p class="tx-bold item-label mg-b-0 count_per_status">  
+                          <span class="mg-b-0" *ngIf=" !ticket_status_data?.Open"> 0 </span>
+                          <span class="mg-b-0" *ngIf=" ticket_status_data?.Open"> {{ticket_status_data.Open}}</span>
+                          Open Tickets
+                        </p>
+                      </button>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-2">
+                <div class="card card-status pd-0-force">
+                  <div class="media" >
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>lock_open</mat-icon>
+                    </div> -->
+                    <div class="media-body text-center mg-0-force col-8 pd-0-force">
+                      <button mat-raised-button color="primary" (click)="openDialog('Assigned')" class="dashboard_btn"  style="background:#f31974">
+                          <!-- <ng2-odometer [number]="ticket_status_data?.Assigned" [config]="{ }">
+                          </ng2-odometer> -->
+                          <p class="tx-bold item-label mg-b-0 count_per_status">  
+                            <span class="mg-b-0" *ngIf=" !ticket_status_data?.Assigned"> 0 </span>
+                            <span class="mg-b-0" *ngIf=" ticket_status_data?.Assigned"> {{ticket_status_data.Assigned}}</span>
+                            Assigned Tickets
+                          </p>
+                      </button>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-2">
+                <div class="card card-status pd-0-force">
+                  <div class="media" >
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>query_builder</mat-icon>
+                    </div> -->
+                    <div class=" media-body mg-0-force text-center col-8 pd-0-force" >
+                        <button mat-raised-button color="primary" (click)="openDialog('Processing')" class="dashboard_btn" style="background:#f37419">
+                        <p class="tx-bold item-label mg-b-0 count_per_status">  
+                          <span class="mg-b-0" *ngIf=" !ticket_status_data?.Processing"> 0 </span>
+                          <span class="mg-b-0" *ngIf=" ticket_status_data?.Processing"> {{ticket_status_data.Processing}}</span>
+                          Processing Tickets
+                        </p>
+                      </button>
+                      
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-2">
+                <div class="card card-status pd-0-force">
+                  <div class="media">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>lock_open</mat-icon>
+                    </div> -->
+                    <div class=" media-body mg-0-force text-center col-8 pd-0-force">
+                      <button mat-raised-button color="primary" (click)="openDialog('Waiting For Approval')" class="dashboard_btn" style="background:#19a9d4">
+                        <p class="tx-bold item-label mg-b-0 count_per_status" style="white-space: pre-wrap; line-height: normal;">  
+                          <span class="mg-b-0" *ngIf=" !ticket_status_data?.Waiting_For_Approval"> 0 </span>
+                          <span class="mg-b-0" *ngIf=" ticket_status_data?.Waiting_For_Approval"> {{ticket_status_data.Waiting_For_Approval}}</span>
+                          Waiting For Approval
+                        </p>
+                      </button>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-2">
+                <div class="card card-status pd-0-force">
+                  <div class="media" >
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>check_circle_outline</mat-icon>
+                    </div> -->
+                    <div class=" media-body mg-0-force text-center col-8 pd-0-force">
+                      <button mat-raised-button color="primary" (click)="openDialog('Confirm')" class="dashboard_btn"  style="background:#4eb96e">
+                        <p class="tx-bold item-label mg-b-0 count_per_status">  
+                          <span class="mg-b-0" *ngIf=" !ticket_status_data?.Confirm"> 0 </span>
+                          <span class="mg-b-0" *ngIf=" ticket_status_data?.Confirm"> {{ticket_status_data.Confirm}}</span>
+                          Confirm Tickets
+                        </p>
+                      </button>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-2">
+                <div class="card card-status pd-0-force">
+                  <div class="media">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>feedback</mat-icon>
+                    </div> -->
+                    <div class="media-body mg-0-force text-center col-8 pd-0-force">
+                      <button mat-raised-button color="primary" (click)="openDialog('Closed')" class="dashboard_btn"  style="background:#9411f7">
+                        <p class="tx-bold item-label mg-b-0 count_per_status">  
+                          <span class="mg-b-0" *ngIf=" !ticket_status_data?.Closed"> 0 </span>
+                          <span class="mg-b-0" *ngIf=" ticket_status_data?.Closed"> {{ticket_status_data.Closed}}</span>
+                          Closed Tickets
+                        </p>
+                      </button>
+                     
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              
+            </div>
+
+            <div class="row row-xs mg-t-10 mg-b-10">
+              <div class="col-sm-6 col-lg-6 pd-r-0">
+                <mat-card class="">
+                  <mat-card-subtitle class="mg-b-0 tx-bold">
+                    <span class="tx-primary"> Overall Ticket Count By Departments</span></mat-card-subtitle>
+                   <!-- <ngx-charts-advanced-pie-chart legend="true"  [view]="view" [customColors]="ColorScheme"
+                    [results]="ticket_graph" legend="true" legendPosition="below" legendTitle="Departments"
+                    gradient="true" (select)="onSelect($event)">
+                  </ngx-charts-advanced-pie-chart>  -->
+                  <fusioncharts width="500"
+                  height="310"
+                  type="doughnut2d" 
+                  [dataSource]="dataSource"></fusioncharts>
+                  
+                </mat-card>
+              </div>
+              <div class="col-sm-6 col-lg-6">
+                <mat-card class="">
+                  <mat-card-subtitle class="mg-b-0 tx-bold">
+                    <span class="tx-primary"> Ticket Status by Departments</span></mat-card-subtitle>
+                  <ngx-charts-bar-vertical-stacked [yScaleMax]="yScaleMax" [view]="view" [customColors]="ColorScheme"
+                    [results]="ticket_bar" xAxis="true" yAxis="true" legend="true"
+                    legendPosition="below" legendTitle="Ticket Status" [yAxisTicks]="yAxisTicks" (select)="onSelect($event)">
+                  </ngx-charts-bar-vertical-stacked>
+                </mat-card>
+              </div>
+            </div>
+            <!-- <mat-grid-list cols="2" rowHeight="400">
+              <mat-grid-tile rowspan="1">
+                <mat-card class="wd-100p mg-r-10 ">
+                  <mat-card-subtitle class="mg-b-0 tx-bold">
+                    <span class="tx-primary">Department</span></mat-card-subtitle>
+                  <ngx-charts-gauge legend="true" [view]="view" [customColors]="ColorScheme" [results]="ticket_graph"
+                    legend="true" legendPosition="below" legendTitle="Departments" gradient="true"
+                    (select)="onSelect($event)">
+                  </ngx-charts-gauge>
+                </mat-card>
+              </mat-grid-tile>
+              <mat-grid-tile rowspan="1">
+                <mat-card class="wd-100p mg-r-10 ">
+                  <mat-card-subtitle class="mg-b-0 tx-bold">
+                    <span class="tx-primary">Status</span></mat-card-subtitle>
+                  <ngx-charts-bar-vertical-stacked [view]="view" [customColors]="ColorScheme" [results]="ticket_bar"
+                    gradient="true" xAxis="true" yAxis="true" legend="true" legendPosition="below"
+                    legendTitle="Departments" (select)="onSelect($event)">
+                  </ngx-charts-bar-vertical-stacked>
+                </mat-card>
+              </mat-grid-tile>
+            </mat-grid-list> -->
+          </div>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<style>
+  .my-class
+  {
+      background-color:white !important;
+  }
+  .my-class2
+  {
+      background-color:white !important;
+  }
+</style>

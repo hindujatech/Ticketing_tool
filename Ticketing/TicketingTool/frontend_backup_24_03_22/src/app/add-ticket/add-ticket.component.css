@@ -1,0 +1,11 @@
+.example-container> * {
+    width: 100%;
+}
+.example-container {
+    display: flex;
+    flex-direction: column;
+}
+/* textarea {
+    resize: none !important;
+    height: 42px;
+} */

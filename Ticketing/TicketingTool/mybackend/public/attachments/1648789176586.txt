@@ -1,0 +1,11 @@
+1. Python 3.7.0
+2. Visual Studio Code
+3. Pycharm IDE (Community)
+4. Node 13.14.0 || NVM
+5. PgAdmin 4
+6. PostgreSQL
+7. Postman
+8. Jupyter Notebook
+9. Git || Github Desktop
+10. Anydesk
+11. Ms Teams

@@ -1,0 +1,48 @@
+.photo_camera{
+    width: 35px;
+    line-height: 1.5;
+  }
+  .camera_class{
+    border-radius: 100%;
+    position: absolute;
+    margin-top: -50px;
+    margin-left: 30px;
+    border: 3px solid #fff;
+    background-color: #d8d8d8;
+  }
+  .card-contact .card-img{
+    height: 120px;
+  }
+  .break-word{
+    word-break: break-all;
+  }
+  .font-icon{
+    /* font-size: 16px; */
+    font-weight: bold;
+  }
+  .example-full-width ::ng-deep .mat-form-field-appearance-outline {
+    height: 25px;
+    line-height: 1;
+  }
+  
+   .example-full-width ::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+    padding: 0px;
+  }
+  
+  .example-full-width ::ng-deep .mat-form-field-infix {
+    padding: 0px 0 5px 0;
+  }
+  .example-full-width ::ng-deep.mat-form-field-appearance-outline .mat-form-field-label{
+    top :1em;
+  }
+  .example-full-width ::ng-deep.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label{
+    transform: translateY(-1.15em);
+    -webkit-transform: translateY(-1.15em);
+    font-size: 10px
+  } 
+  .mat-error{
+    margin-top: 12px;
+  }
+  .buttons{
+    justify-content: center;
+  }

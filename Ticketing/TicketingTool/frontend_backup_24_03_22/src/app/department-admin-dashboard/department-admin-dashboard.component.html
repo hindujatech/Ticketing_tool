@@ -1,0 +1,283 @@
+<mat-sidenav-container class="sidenav-full">
+  <mat-sidenav class="child_nav" autoFocus="false" start="main_sidenav" #child_sidenav mode="side" disableClose="true"
+    position="end">
+    <div class="d-flex justify-content-between">
+      <label class="tx-14 text-center tx-primary tx-bold mg-t-10 mg-l-10" *ngIf="view_type=='edit'">Ticket Edit</label>
+      <label class="tx-14 text-center tx-primary tx-bold mg-t-10 mg-l-10" *ngIf="view_type=='view'">Ticket View</label>
+      <span class="close_nav mg-t-10">
+        <mat-icon class="cursor-pointer" (click)="child_sidenav.toggle()">close</mat-icon>
+      </span>
+    </div>
+
+    <app-ticket-edit [ticket_id]="selected_ticket_id" (edit_submit)="child_sidenav.close()"
+      [selected_department]="selected_department" *ngIf="view_type=='edit'">
+    </app-ticket-edit>
+    <app-ticket-view [ticket_id]="selected_ticket_id" [selected_department]="selected_department"
+      *ngIf="view_type=='view'"></app-ticket-view>
+    <!-- <span class="pd-20 tx-dark">Why Me?? {{view_type}}</span> -->
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-sidenav-container class="sidenav-full">
+      <mat-sidenav class="main_nav sidenav-wv" autoFocus="false" #main_sidenav mode="over" disableClose="true"
+        position="end">
+        <div class="mg-b-10 back_button mg-10 mg-t-10">
+          <span [hidden]="view_nav" class="tx-14 text-center tx-primary tx-bold">
+            Ticket List
+            
+          </span>
+          <span class="close_nav">
+            <mat-icon class="cursor-pointer" (click)="main_sidenav.toggle();child_sidenav.close()">close
+            </mat-icon>
+          </span>
+        </div>
+        <div class="pd-10" *ngIf="load_dashboard_table">
+          <mat-accordion [hidden]="view_nav">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title> Overall
+                   </mat-panel-title>
+              </mat-expansion-panel-header>
+              <br><b>Tickets are highlighted according to Priority
+                <br>Greenyellow-P1,Orange-P2
+              </b>
+              
+              <dashboard-table (ticket_detail)="onChange($event)" [viewList]="false" [disable_department]="true" [disable_edit]="false"
+                [created_by]="true" type="overall" [employee_detail]="employee_detail"
+                [table_data]="over_all_department_data">
+              </dashboard-table>
+            </mat-expansion-panel>
+            <mat-expansion-panel *ngFor="let employee_data of ticket_depatment_data | keyvalue">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span *ngIf="employee_detail[employee_data.key]?.employee_name; else show_name_alone">
+                    {{employee_detail[employee_data.key]?.employee_name}}
+                  </span>
+                  <ng-template #show_name_alone>
+                    {{employee_data.key}}
+                  </ng-template>
+                  
+                </mat-panel-title>
+                
+              </mat-expansion-panel-header>
+              <div *ngIf="employee_data.key!='Unassigned'">            
+                <br><b>Tickets are highlighted according to Priority
+                  <br>Green-yellow-P1
+                  <svg width="20" height="20">
+                    <rect width="20" height="20" style="fill:#adff2f;stroke-width:3;stroke:rgb(0,0,0)" />
+                  </svg>
+                <br>Orange-P2
+                <svg width="20" height="20">
+                  <rect width="20" height="20" style="fill:#ffa500;stroke-width:3;stroke:rgb(0,0,0)" />
+                </svg>
+
+              </b>
+            </div>
+  
+             
+              <dashboard-table (ticket_detail)="onChange($event)" [viewList]="false" [disable_department]="true" [viewList]="false" [disable_edit]="false"
+                [created_by]="true" [employee_detail]="employee_detail" [table_data]="employee_data.value">
+            </dashboard-table>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <div class="slim-mainpanel">
+          <div class="container custom-dashboard">
+            <div class="slim-pageheader pd-t-15 pd-b-0">
+              <ol class="breadcrumb slim-breadcrumb tx-bold">
+                <span (click)="main_sidenav.toggle();add_nav=true;view_nav=false;"
+                  class="tx-blue cursor-pointer d-flex">
+                  <i class="material-icons mg-r-2 tx-21">remove_red_eye</i>
+                  <label class="cursor-pointer ">View
+                    Tickets</label>
+                </span>
+              </ol>
+            </div><!-- slim-pageheader -->
+            <div class="row row-xs seven-cols">
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media" style="background:#1948f3a8">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>lock_open</mat-icon>
+                    </div> -->
+                    <div class="border-left media-body mg-0-force text-center pd-0-force" style="background:#1948f3">
+                      <h1 class="mg-b-0">
+                        <ng2-odometer [number]="ticket_status_data?.Open" [config]="{ }">
+                        </ng2-odometer>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0 pd-b-10">Open Tickets</p>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media" style="background:#f31974">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>query_builder</mat-icon>
+                    </div> -->
+                    <div class="border-left media-body mg-0-force text-center pd-0-force" style="background:#f31974">
+                      <h1 class="mg-b-0">
+                        <ng2-odometer [number]="ticket_status_data?.Assigned" [config]="{ }">
+                        </ng2-odometer>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0  pd-b-10">Assigned Tickets</p>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media" style="background:#f37419a1">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>feedback</mat-icon>
+                    </div> -->
+                    <div class="border-left media-body mg-0-force text-center pd-0-force" style="background:#f37419">
+                      <h1 class="mg-b-0">
+                        <ng2-odometer *ngIf="ticket_status_data; else zero_block1"
+                          [number]="ticket_status_data['Processing']" [config]="{ }">
+                        </ng2-odometer>
+                        <ng-template #zero_block1>
+                          <ng2-odometer number="0" [config]="{ }">
+                          </ng2-odometer>
+                        </ng-template>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0 pd-b-10">Processing Tickets</p>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media" style="background:#19a9d4">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>check_circle_outline</mat-icon>
+                    </div> -->
+                    <div class="border-left media-body mg-0-force text-center pd-0-force" style="background:#19a9d4" >
+                      <h1 class="mg-b-0">
+                        <ng2-odometer *ngIf="ticket_status_data; else zero_block2"
+                          [number]="ticket_status_data['Waiting For Approval']" [config]="{ }">
+                        </ng2-odometer>
+                        <ng-template #zero_block2>
+                          <ng2-odometer number="0" [config]="{ }">
+                          </ng2-odometer>
+                        </ng-template>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0  pd-b-10">Waiting For Approval</p>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media" style="background-color:#9411f761">
+                    <div class="border-left media-body mg-0-force text-center pd-0-force" style="background:#9411f7">
+                      <h1 class="mg-b-0">
+                        <ng2-odometer *ngIf="ticket_status_data; else zero_block3"
+                          [number]="ticket_status_data['Work Around']" [config]="{ }">
+                        </ng2-odometer>
+                        <ng-template #zero_block3>
+                          <ng2-odometer number="0" [config]="{ }">
+                          </ng2-odometer>
+                        </ng-template>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0 pd-b-10">Work Around</p>
+                    </div>
+                  </div>            
+                </div>
+              </div> 
+             
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media" style="background-color:#9411f761">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>lock_open</mat-icon>
+                    </div> -->
+                    <div class="border-left media-body mg-0-force text-center pd-0-force" style="background:#9411f7">
+                      <h1 class="mg-b-0">
+                        <ng2-odometer *ngIf="ticket_status_data; else zero_block3"
+                          [number]="ticket_status_data['Closed']" [config]="{ }">
+                        </ng2-odometer>
+                        <ng-template #zero_block3>
+                          <ng2-odometer number="0" [config]="{ }">
+                          </ng2-odometer>
+                        </ng-template>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0 pd-b-10">Closed Tickets</p>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+             
+              <div class="col-md-1">
+                <div class="card card-status pd-0-force">
+                  <div class="media"  style="background:#62ea8bb5">
+                    <!-- <div class="mg-t-5 text-center col-4 pd-0-force ">
+                      <mat-icon>query_builder</mat-icon>
+                    </div> -->
+                    <div class="border-left media-body mg-0-force text-center  pd-0-force" style="background:#4eb96e">
+                      <h1 class="mg-b-0">
+                        <ng2-odometer *ngIf="ticket_status_data; else zero_block4" [number]="ticket_status_data?.Confirm"
+                          [config]="{ }">
+                        </ng2-odometer>
+                        <ng-template #zero_block4>
+                          <ng2-odometer number="0" [config]="{ }">
+                          </ng2-odometer>
+                        </ng-template>
+                      </h1>
+                      <p class="tx-bold item-label mg-b-0  pd-b-10">Confirm Tickets</p>
+                    </div><!-- media-body -->
+                  </div><!-- media -->
+                </div><!-- card -->
+              </div><!-- col-3 -->
+            </div>
+            
+
+            <div class="row row-xs mg-t-10 mg-b-10">
+              <div class="col-sm-6 col-lg-6 pd-r-0">
+                <mat-card class="">
+                  <mat-card-subtitle class="mg-b-0 tx-bold">
+                    <span class="tx-primary">Admin  Overall Ticket Count</span></mat-card-subtitle>
+                  <!-- <ngx-charts-gauge [max]="gauge_max" legend="true" [view]="view" [customColors]="ColorScheme"
+                    [results]="ticket_graph" legend="true" legendPosition="below" legendTitle="Employee"
+                    gradient="true">
+                  </ngx-charts-gauge> -->
+                  <ngx-charts-bar-vertical legend="false"  [view]="view" [customColors]="ColorScheme" 
+                  [results]="ticket_graph" [xAxis]="showXAxis"  [yAxis]="showYAxis" legendPosition="below" legendTitle="Engineer's Id"
+                  gradient="true" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+                  [yAxisLabel]="yAxisLabel" (select)="onSelect($event)">
+                 </ngx-charts-bar-vertical>
+          
+                </mat-card>
+              </div>
+              <div class="col-sm-6 col-lg-6">
+                <mat-card class="">
+
+                  
+                  <mat-card-subtitle class="mg-b-0 tx-bold">
+                    <span class="tx-primary"> Engineer's Ticket  Status</span></mat-card-subtitle>
+                  <ngx-charts-bar-vertical-stacked [yScaleMax]="yScaleMax"  [view]="view" [customColors]="ColorScheme"
+                    [results]="ticket_bar" gradient="true" xAxis="true" yAxis="true" legend="false"
+                    legendPosition="below" legendTitle="Count by Status" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="XAxisLabel"
+                    [yAxisLabel]="YAxisLabel" [yAxisTicks]="yAxisTicks" (select)="onSelect($event)">
+                  </ngx-charts-bar-vertical-stacked>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<style>
+  .my-class
+  {
+      background-color:greenyellow !important;
+  }
+  .my-class2
+  {
+      background-color:orange !important;
+  }
+</style>

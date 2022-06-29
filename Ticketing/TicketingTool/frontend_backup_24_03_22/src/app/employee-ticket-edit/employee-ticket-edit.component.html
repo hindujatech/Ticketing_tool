@@ -1,0 +1,170 @@
+<div class="pd-10-force">
+  <div class="form-layout form-layout-2">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label tx-bold">Ticket ID:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.ticket_code}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+
+      <div class="col-md-4 mg-t--1 mg-md-t-0">
+        <div class="form-group mg-md-l--1">
+          <label class="form-control-label tx-bold">Raised On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.created_on | date: 'dd/MM/yyyy'}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-4 mg-t--1 mg-md-t-0">
+        <div class="form-group mg-md-l--1">
+          <label class="form-control-label tx-bold">status:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.status}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+
+    </div><!-- row -->
+  </div><!-- form-layout -->
+  <div class="form-layout form-layout-2 mg-t-10 border">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Subject:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.subject}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Department:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.department}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Attachments:</label>
+          <a *ngIf="attachment" [href]="attachment" download>
+            <span class="text-secondary">
+              {{ticket_detail?.attachment}}
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Description:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.description}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+    </div>
+  </div>
+
+  <div class="form-layout form-layout-2 mg-t-10 pd-b-10 border" *ngIf="ticket_detail?.status !='Open'">
+    <div class="row no-gutters">
+      <div class="col-md-3 mg-t--1 mg-md-t-0">
+        <div class="form-group filter_class mg-md-l--1 border-0">
+          <label class="form-control-label tx-bold">SLA/Priority:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.priority}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-3">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Assigned To:</label>
+          <span class="text-secondary">
+            {{employee_detail[ticket_detail?.assigned_to]?.employee_name}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+
+      <div class="col-md-3" *ngIf="ticket_detail?.status!='Open' && ticket_detail?.status!='Assigned'">
+        <div class="form-group filter_class test-class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Addressed On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.addressed_on  | date: 'dd/MM/yyyy HH:mm'}}
+          </span>
+        </div>
+      </div><!-- col-3 -->
+      <div class="col-md-3" *ngIf="ticket_detail?.status!='Open' && ticket_detail?.status!='Assigned'">
+        <div class="form-group filter_class test-class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Tentative Close On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.tentative_closed_on  | date: 'dd/MM/yyyy HH:mm'}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3" *ngIf="ticket_detail?.status=='Waiting For Approval'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Approve:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.approved_by}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-12" *ngIf="ticket_detail?.status=='Closed'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Reason:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.closed_reason}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-12" *ngIf="ticket_detail?.status=='Processing'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Description:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.admin_description}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+    </div><!-- row -->
+  </div><!-- form-layout -->
+
+  <form [formGroup]="form_data" (ngSubmit)="onSubmit()">
+  <div class="form-layout form-layout-2 mg-t-10 border pd-b-20"  *ngIf="ticket_detail?.status=='Closed' || ticket_detail?.status=='Confirm'">
+    <div class="row no-gutters">
+      <div class="col-md-6" *ngIf="ticket_detail?.status=='Closed' || ticket_detail?.status=='Confirm'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Reason:<span class="tx-danger">*</span></label>
+          <mat-form-field class="col-12 pd-0" appearance="outline" class="col-12 pd-0-force">
+            <textarea  formControlName="closed_reason" rows="4" matInput placeholder="Feedback"></textarea>
+            <mat-error *ngIf="form_data.controls.closed_reason.hasError('required')">
+              Reason is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-3"  *ngIf="ticket_detail?.status=='Closed' || ticket_detail?.status=='Confirm'">
+        <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Feedback Status:<span class="tx-danger">*</span></label>
+          <mat-form-field class="col-12 pd-0" appearance="outline">
+            <mat-label>Select Status</mat-label>
+            <mat-select  formControlName="feedback_status" placeholder="Select Status">
+              <mat-option  value="Open">Open</mat-option>
+              <mat-option  value="Confirm">Confirm</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form_data.controls.feedback_status.hasError('required')">
+             Feedback Status is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div><!-- col-3 -->
+    </div>
+  </div> 
+  <div class="d-flex justify-content-center mg-t-15"  *ngIf="ticket_detail?.status=='Closed' || ticket_detail?.status=='Confirm'">
+    <button mat-raised-button color="primary">Submit</button>
+  </div>
+</form>
+
+
+</div>

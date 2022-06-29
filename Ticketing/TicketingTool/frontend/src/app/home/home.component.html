@@ -1,0 +1,36 @@
+<div class="slim-mainpanel">
+  <div class="container">
+    <!-- <div class="slim-pageheader">
+      <ol class="breadcrumb slim-breadcrumb">
+        <i class="tx-primary icon ion-help-circled cursor-pointer tx-20-force"
+          matTooltip="You can add ticket based on support function"></i>
+      </ol>
+      <h6 class="slim-pagetitle">
+        <span>Add Ticket</span>
+      </h6>
+    </div> -->
+    <div class="section-wrapper mat-elevation-z3 pd-0">
+      <mat-tab-group (focusChange)="set_active($event)" animationDuration="0ms"
+        mat-stretch-tabs class="example-stretched-tabs">
+        <mat-tab label="Internal IT-Application Support">
+          <app-add-ticket [ticket_type]=active_tab></app-add-ticket>
+        </mat-tab>
+        <mat-tab label="IT-Infrastructure">
+          <app-add-ticket [ticket_type]=active_tab></app-add-ticket>
+        </mat-tab>
+        <mat-tab label="Finance">
+          <app-add-ticket [ticket_type]=active_tab></app-add-ticket>
+        </mat-tab>
+        <mat-tab label="Facilities">
+          <app-add-ticket [ticket_type]=active_tab></app-add-ticket>
+        </mat-tab>
+        <mat-tab label="HR">
+          <app-add-ticket [ticket_type]=active_tab></app-add-ticket>
+        </mat-tab>
+        <mat-tab label="Quality">
+          <app-add-ticket [ticket_type]=active_tab></app-add-ticket>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

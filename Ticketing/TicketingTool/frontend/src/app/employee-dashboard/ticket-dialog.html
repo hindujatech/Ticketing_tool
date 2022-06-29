@@ -1,0 +1,19 @@
+<button class="close" mat-button (click)="onNoClick()">X</button>
+
+<!-- <dashboard-table   (ticket_detail)="onChange($event)" [viewList]="true" type="overall"
+    [table_data]="all_department_data" [status_mapping]="status_mapping">
+</dashboard-table> -->
+<div *ngIf="superAdminUrl != '/super_admin_dashboard' ">
+  <dashboard-table (ticket_detail)="onChange($event)" [viewList]="true" [disable_department]="true" [disable_edit]="false"
+                  [created_by]="true" type="overall" [employee_detail]="employee_detail"
+                  [table_data]="all_department_data" (closePopUp)="getNotification($event)" >
+  </dashboard-table>
+</div>
+<div *ngIf="superAdminUrl == '/super_admin_dashboard' ">
+  <dashboard-table (ticket_detail)="onChange($event)" [viewList]="true" [disable_department]="true" [disable_edit]="true"
+  [created_by]="true" type="overall" [employee_detail]="employee_detail"
+  [table_data]="all_department_data" (closePopUp)="getNotification($event)" >
+</dashboard-table>
+</div>
+<!-- <app-employee-ticket-view [ticket_id]="selected_ticket_id" *ngIf="view=='view'"></app-employee-ticket-view>
+<app-employee-ticket-edit [ticket_id]="selected_ticket_id" *ngIf="view=='edit'"></app-employee-ticket-edit> -->

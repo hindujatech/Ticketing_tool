@@ -1,0 +1,48 @@
+<div class="slim-header">
+  <div class="container">
+    <div class="slim-header-left">
+      <!-- <a class="cursor-pointer" routerLink="/my_profile">
+        <img height="50px" src="assets/img/sg_new_logo.png" class="" alt="TT">
+      </a> -->
+
+      <img height="50px" width="130px" src="assets/img/HindujaTech.jpg" class="" alt="iDeal">
+
+    </div><!-- slim-header-left -->
+    <div class="slim-header-right">
+      <div class="logged-user cursor-pointer" [matMenuTriggerFor]="user_menu">
+        <img *ngIf="profile_pic_valid;else defalut_img" [src]="profile_pic" alt="User">
+        <ng-template #defalut_img>
+          <img src="assets/employee_pics/profile_picture.jpg" alt="User">
+        </ng-template>
+        <span>{{user_name}}</span>
+        <i class="fa fa-angle-down"></i>
+      </div>
+      <mat-menu #user_menu="matMenu">
+        <span class="nav-link cursor-pointer" (click)="redirect('employee')">
+          <i class="tx-15 fa fa-tasks"></i> My dashboard
+        </span>
+        <span *ngIf="approve_request_flag" class="nav-link cursor-pointer" (click)="redirect('approve_request')">
+          <i class="tx-15 icon ion-clipboard mg-r-5"></i>Approve Request
+        </span>
+        <span *ngIf="admin_flag_list.length" mat-menu-item class="nav-link cursor-pointer"
+          [matMenuTriggerFor]="admin_menu"><i class="tx-15 fas fa-users-cog"></i>
+          Admin</span>
+          <!-- <span *ngIf="admin_flag_list.length" mat-menu-item class="nav-link cursor-pointer"
+          [matMenuTriggerFor]="admin_menu"><i class="tx-15 fas fa-users-cog"></i>
+          Export</span>
+         -->
+        <span class="nav-link cursor-pointer" (click)=Onlogout()>
+          <i class="tx-15 fas fa-power-off"></i> Logout
+        </span>
+
+      </mat-menu>
+      <mat-menu #admin_menu="matMenu">
+        <div *ngFor="let department of admin_flag_list">
+          <span class="nav-link cursor-pointer" (click)="redirect('admin',department)">{{department}}</span>
+          <span class="nav-link cursor-pointer" (click)="export_change(department)">{{department}}-Export</span>
+
+        </div>
+      </mat-menu>
+    </div>
+  </div><!-- container -->
+</div><!-- slim-header -->

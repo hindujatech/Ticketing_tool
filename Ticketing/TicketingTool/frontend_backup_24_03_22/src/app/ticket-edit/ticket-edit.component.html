@@ -1,0 +1,294 @@
+<div class="pd-10-force">
+  <div class="form-layout form-layout-2">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label tx-bold">Ticket ID:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.ticket_code}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <!-- <div class="col-md-2">
+        <div class="form-group">
+          <label class="form-control-label tx-bold">Priority:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.priority}}
+          </span>
+        </div>
+      </div> -->
+      <!-- col-4 -->
+     
+      <div class="col-md-4 mg-t--1 mg-md-t-0">
+        <div class="form-group mg-md-l--1">
+          <label class="form-control-label tx-bold">Raised By:</label>
+          <span class="text-secondary">
+            {{raised_by}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-4 mg-t--1 mg-md-t-0">
+        <div class="form-group mg-md-l--1">
+          <label class="form-control-label tx-bold">Raised On:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.created_on | date: 'dd/MM/yyyy'}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-4">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force">
+          <label class="form-control-label tx-bold">Sub Unit:</label>
+          <span class="text-secondary">
+            {{sub_unit}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group mg-md-l--1 bd-t-0-force">
+          <label class="form-control-label tx-bold">Contact Number:</label>
+          <span class="text-secondary">
+            {{mobile_no}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+      <div class="col-md-4">
+        <div class="form-group mg-md-l--1 bd-t-0-force">
+          <label class="form-control-label tx-bold">Location:</label>
+          <span class="text-secondary">
+            {{employee_detail[ticket_detail?.created_by]?.current_location_name}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+    </div><!-- row -->
+  </div><!-- form-layout -->
+  <div class="form-layout form-layout-2 mg-t-10 border">
+    <div class="row no-gutters">
+      <div class="col-md-6">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Subject:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.subject}}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+          <label class="form-control-label tx-bold">Attachments:</label>
+          <a *ngIf="attachment" [href]="attachment" target="_blank" download>
+            <span class="">
+
+
+              {{ticket_detail?.attachment}}
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group mg-md-l--1 bd-t-0-force border-0">
+          <label class="form-control-label tx-bold">Description:</label>
+          <span class="text-secondary">
+            {{ticket_detail?.description}}
+          </span>
+        </div>
+      </div><!-- col-4 -->
+    </div>
+  </div>
+  <!-- <div class="form-layout form-layout-2 mg-t-10 border">
+    <div class="no-gutters">
+      <label class="form-control-label tx-bold">Older Feedbacks:</label>
+      <div class="col-md-6" *ngFor="let value of ticket_details" >
+        <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0" *ngIf="value.status!=given_status">
+         <span class="text-secondary">
+            {{value.admin_description}}
+          </span>
+        </div>
+      </div>
+      
+    </div>
+  </div> -->
+
+
+  <form [formGroup]="form_data" (ngSubmit)="onSubmit()">
+    <div class="form-layout form-layout-2 mg-t-10 pd-b-10 border">
+      <div class="row no-gutters">
+        <div class="col-md-3">
+          <div class="form-group bd-t-0-force filter_class pd-b-0-force border-0">
+            <label class="form-control-label tx-bold">Department:<span class="tx-danger">*</span></label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Select Department</mat-label>
+              <mat-select formControlName="department" [(value)]="department"  (selectionChange)="department_changed($event,department)" placeholder="Select Department">
+                <mat-option *ngFor="let value of departments" [value]="value">{{value}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form_data.controls.department.hasError('required')">
+                Department is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group filter_class border-0">
+            <label class="form-control-label tx-bold">Category:<span class="tx-danger">*</span></label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Select Category</mat-label>
+              <mat-select  formControlName="sub_function"   placeholder="Select Category"
+                [(ngModel)]="sub_function">
+                <mat-option *ngFor="let value of sub_functions" [value]="value">{{value}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form_data.controls.sub_function.hasError('required')">
+                Category is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+        <div class="col-md-3 mg-t--1 mg-md-t-0">
+          <div class="form-group filter_class mg-md-l--1 border-0">
+            <label class="form-control-label tx-bold">Sub Category:<span class="tx-danger">*</span></label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Select Sub Category</mat-label>
+              <mat-select  formControlName="ticket_category" placeholder="Select Sub Category">
+                <mat-option *ngFor="let value of ticket_category[sub_function]" [value]="value">{{value}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form_data.controls.ticket_category.hasError('required')">
+                Sub Category is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+        <div class="col-md-3 mg-t--1 mg-md-t-0">
+          <div class="form-group filter_class mg-md-l--1 border-0">
+            <label class="form-control-label tx-bold">SLA/Priority:</label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Select Priority</mat-label>
+              <mat-select  formControlName="priority" placeholder="Select Priority">
+                <mat-option *ngFor="let value of priority" [value]="value">{{value}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form_data.controls.priority.hasError('required')">
+                Priority is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+        <div class="col-md-3">
+          <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">assigned To:<span class="tx-danger">*</span></label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Select Employee</mat-label>
+              <mat-select  formControlName="assigned_to" name="assigned" (selectionChange)="assigned_changed(assigned_to,raised_by,ticket_detail?.ticket_code)"   placeholder="Select Employee">
+                <mat-option *ngFor="let value of admins" [value]="value" [disabled]="this.assign_flag" >{{employee_detail[value]?.employee_name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form_data.controls.assigned_to.hasError('required')">
+                Assigned To is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+        <div class="col-md-3">
+          <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">Status:<span class="tx-danger">*</span></label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Select Status</mat-label>
+              <mat-select formControlName="status" placeholder="Select Status"
+                [(ngModel)]="status">
+                <mat-option *ngFor="let value of ticket_status" [value]="value">{{value}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form_data.controls.status.hasError('required')">
+                Status is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+  
+        <div class="col-md-3" *ngIf="status!='Open' && status!='Assigned' && status!='Work Around' && status!='Waiting For Approval' && status!='Closed' && status!='Confirm'">
+          <div class="form-group filter_class test-class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">Addressed On:</label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Choose DateTime</mat-label>
+              <input   formControlName="addressed_on" class="form-control wd-100p-force border-0" matInput [minDate]="minDate"
+                [enableTime]="true" mwlFlatpickr [mode]="single" defaultDate="today" dateFormat="d-m-Y H:i">
+              <mat-error *ngIf="form_data.controls.addressed_on.hasError('required')">
+                Addressed On is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-3 -->
+        <div class="col-md-3" *ngIf="status!='Open' && status!='Assigned'  && status!='Work Around' && status!='Waiting For Approval' && status!='Closed' && status!='Confirm'">
+          <div class="form-group filter_class test-class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">Tentative Close On:</label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Choose DateTime</mat-label>
+              <input   formControlName="tentative_closed_on"
+                class="form-control wd-100p-force border-0" matInput [minDate]="addressed_on" [enableTime]="true"
+                mwlFlatpickr defaultDate="today" dateFormat="d-m-Y H:i" [mode]="single">
+              <mat-error *ngIf="form_data.controls.tentative_closed_on.hasError('required')">
+                Tentative Close On is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="status=='Waiting For Approval'">
+          <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">Approve:</label>
+            <mat-form-field class="col-12 pd-0" appearance="outline">
+              <mat-label>Search Employee</mat-label>
+              <input  formControlName="approved_by" type="text"
+                (keyup)="update_employee_list($event)" placeholder="Search Employee" aria-label="Search Employee"
+                matInput [matAutocomplete]="employee">
+              <mat-autocomplete #employee="matAutocomplete" id="employee" [displayWith]="displayFn">
+                <mat-option *ngFor="let key of Object.keys(filtered_employee_list)"
+                  [value]="filtered_employee_list[key]">
+                  {{filtered_employee_list[key]["employee_name"]}}
+                </mat-option>
+              </mat-autocomplete>
+              <mat-error *ngIf="form_data.controls.approved_by.hasError('required')">
+                Approve is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+        <div class="col-md-12" *ngIf="status=='Confirm' || status=='Closed'">
+          <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">Reason:<span class="tx-danger">*</span></label>
+            <mat-form-field class="col-12 pd-0" appearance="outline" class="col-12 pd-0-force">
+              <textarea  formControlName="closed_reason" rows="4" matInput
+                placeholder="Explain Reason"></textarea>
+              <mat-error *ngIf="form_data.controls.closed_reason.hasError('required')">
+                Reason is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+        <div class="col-md-12" *ngIf="status=='Processing' && status!='Assigned'">
+          <div class="form-group filter_class mg-md-l--1 bd-t-0-force border-0">
+            <label class="form-control-label tx-bold">Description:</label>
+            <mat-form-field class="col-12 pd-0" appearance="outline" class="col-12 pd-0-force">
+              <textarea  formControlName="admin_description" rows="4" matInput
+                placeholder="Explain"></textarea>
+              <mat-error *ngIf="form_data.controls.admin_description.hasError('required')">
+                Description is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div><!-- col-4 -->
+      </div><!-- row -->
+
+    </div><!-- form-layout -->
+    <!-- <input type="file" (change)="onFileChange($event)" multiple="false" />
+	<table class="sjs-table">
+		<tbody>
+      <tr *ngFor="let row of data">
+			<td *ngFor="let val of row">
+				{{val}}
+			</td>
+		</tr>
+    </tbody>
+  </table> -->
+  <!-- <input type="file" style="display: inline-block;" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+<button type="button" class="btn btn-info" (click)="Upload()" >Upload</button> -->
+    <div class="d-flex justify-content-center mg-t-15">
+      <button mat-raised-button color="primary">Submit</button>
+    </div>
+  </form>
+</div>
+<!-- <button mat-raised-button color="primary" (click)="export_change()">export</button> -->
+ 

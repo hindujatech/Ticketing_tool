@@ -1,0 +1,64 @@
+<div class="card-contact border-0 ">
+  <div class="tx-center mg-b-10">
+    <span class="tx-primary">
+      <input type="file" #file hidden="true" (change)="onFilesAdded()" />
+      <div>
+        <img *ngIf="profile_pic_valid;else defalut_img" [src]="profile_pic" alt="User"
+          class="card-img mat-elevation-z8">
+        <ng-template #defalut_img>
+          <img src="assets/employee_pics/profile_picture.jpg" alt="User" class="card-img mat-elevation-z8">
+        </ng-template>
+      </div>
+      <div>
+        <span class="camera_class cursor-pointer" (click)="addFiles()">
+          <i class="material-icons photo_camera">
+            photo_camera
+          </i>
+        </span>
+      </div>
+    </span>
+    <div *ngIf="fileUploadError" class="mg-t-10 tx-danger tx-bold">{{ErrorMessage}}</div>
+    <h5 class="mg-t-10 mg-b-0"><span class="contact-name">{{user_object?.data?.first_name}} {{user_object?.data?.last_name}}
+        <!-- <label (click)="edit_info()"><i class="fa fa-pencil-square-o font-icon cursor-pointer tx-primary"></i></label> -->
+      </span></h5>
+    <label class="text-secondary">{{user_object?.data?.title}}</label>
+  </div><!-- tx-center -->
+  <form [formGroup]="employee_info">
+    <p class="contact-item">
+      <span>Location:</span>
+      <span class="tx-primary break-word" *ngIf="!edit_information">{{user_object?.data?.address_line1}}</span>
+      <mat-form-field appearance="outline" class="example-full-width" *ngIf="edit_information">
+        <input matInput placeholder="Enter Location" formControlName="location" [value]="user_object?.data?.address_line1">
+        <mat-error *ngIf="employee_info.controls.location.hasError('required')">
+          Location is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </p><!-- contact-item -->
+    <p class="contact-item">
+      <span>Phone:</span>
+      <span class="tx-primary break-word" *ngIf="!edit_information">{{user_object?.data?.mobile_number}}</span>
+      <mat-form-field appearance="outline" class="example-full-width" *ngIf="edit_information">
+        <input matInput placeholder="Enter Mobile Number" formControlName="mobile_number" (keypress)="keyPress($event)"
+          [value]="user_object?.data?.mobile_number">
+        <mat-error *ngIf="employee_info.controls.mobile_number.hasError('required')">
+          Mobile number is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="employee_info.controls.mobile_number.hasError('maxlength')">
+          Maximum 10 digit <strong>allowed</strong>
+        </mat-error>
+        <mat-error *ngIf="employee_info.controls.mobile_number.hasError('minlength')">
+          Minimun 10 digit <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </p><!-- contact-item -->
+    <p class="contact-item">
+      <span>Email:</span>
+      <span class="tx-primary break-word pd-l-10">{{user_object?.data?.work_email_address}}</span>
+    </p><!-- contact-item -->
+    <p class="contact-item text-center mg-t-10 buttons" *ngIf="edit_information">
+      <button mat-raised-button (click)="cancel_edit_info()" class="mg-r-10-force" color="warn">Cancel</button>
+      <button mat-raised-button (click)="submit_edit_info()" color="primary">Submit</button>
+    </p><!-- contact-item -->
+  </form>
+
+</div>

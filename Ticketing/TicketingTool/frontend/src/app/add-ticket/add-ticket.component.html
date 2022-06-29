@@ -1,0 +1,69 @@
+<div class="slim-mainpanel">
+  <div class="container  mg-l-10">
+    <form [formGroup]="row_form_data">
+      <div class="form-layout form-layout-5 mg-t-10">
+        <div class="row mg-t-20" *ngIf="onBehalfOf_bool">
+          <label class="col-sm-3 form-control-label tx-gray-500">  On behalf of:</label>
+          <mat-form-field class="col-md-9">
+            <mat-select formControlName="onBehalfOf" placeholder="Select Employee" >
+              <ngx-mat-select-search formControlName="onBehalfOf_search" placeholderLabel="Search Employee"
+                noEntriesFoundLabel="Not Found"></ngx-mat-select-search>
+                <mat-option *ngFor="let element of behalf_of_name" [value]="element.itemName">
+                  {{element.itemName}} 
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="row_form_data.controls.onBehalfOf.hasError('required')">
+              Employee Name is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+        </div><!-- row -->
+        <div class="row mg-t-20">
+          <label class="col-sm-3 form-control-label tx-gray-500">Department:</label>
+          <mat-form-field class="col-md-9">
+            <mat-select formControlName="department" placeholder="Select Department">
+              <mat-option *ngFor="let value of departments" [value]="value">{{value}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="row_form_data.controls.department.hasError('required')">
+              Department is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+        </div><!-- row -->
+        <div class="row mg-t-20">
+          <label class="col-sm-3 form-control-label tx-gray-500">Subject:</label>
+          <mat-form-field class="col-md-9">
+            <input formControlName="subject" matInput placeholder="Subject" autocomplete="off">
+            <mat-error *ngIf="row_form_data.controls.subject.hasError('required')">
+              Subject is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+        </div><!-- row -->
+        <div class="row mg-t-20">
+          <label class="col-sm-3 form-control-label tx-gray-500">Attachment:</label>
+          <mat-form-field class="mg-t-10 col-md-9">
+            <ngx-mat-file-input class="cursor-pointer" formControlName="attachment" placeholder="Choose File"></ngx-mat-file-input>
+            <mat-icon matSuffix>folder</mat-icon>
+            <mat-error *ngIf="row_form_data.get('attachment').hasError('maxContentSize')">
+                File size must be less than {{row_form_data.get('attachment')?.getError('maxContentSize').maxSize | byteFormat}} 
+      </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="row mg-t-20">
+          <label class="col-sm-3 form-control-label tx-gray-500">Description:</label>
+          <mat-form-field class="mg-t-10 col-md-9">
+            <textarea rows="8" formControlName="description" matInput placeholder="Explain Issue" autocomplete="off"></textarea>
+            <mat-error *ngIf="row_form_data.controls.description.hasError('required')">
+              Description is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="text-center mg-t-30">
+        <!-- <button mat-raised-button class="mg-r-10-force" color="warn" id="cancel_btn">Cance</button> -->
+        <button mat-raised-button color="primary" id="submit_btn" (click)="add_ticket()">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
